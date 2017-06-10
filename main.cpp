@@ -5,8 +5,8 @@
 
 using namespace std;
 
-const int ySize = 38;
-const int xSize = 38;
+const int ySize = 35;
+const int xSize = 35;
 
 void ShowConsoleCursor(bool showFlag)
 {
@@ -29,7 +29,7 @@ void dispField(bool field[ySize][xSize])
     ShowConsoleCursor(false);
 
     SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), {30, (ySize + 6)} );
-    for(int i = 0; i < 300; ++i)
+    for(int i = 0; i < 600; ++i)
         cout << ' ';
     SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), {0, 0} );
 
@@ -103,7 +103,13 @@ void toggleCell(bool (&field)[ySize][xSize])
 
 void run(bool (&field)[ySize][xSize])
 {
-    while(true)
+    centerField();
+    cout << "run for how many cycles?\n";
+    int cycles;
+    centerField();
+    cin >> cycles;
+
+    for(int i = 0; i < cycles; ++i)
     {
         bool tempField[ySize][xSize] = {0};
 
@@ -117,7 +123,7 @@ void run(bool (&field)[ySize][xSize])
                 int neighborCount = 0;
                 int tempX = x;
 
-                //checks surrounding cells
+                //checks all cells in a 3x3 area around the current cell
                 for(int ity = 0; ity < 3; ++ity, ++y)
                 {
                     //causes y to wrap around
@@ -141,16 +147,15 @@ void run(bool (&field)[ySize][xSize])
                 }
                 if(field[yPos][xPos])
                     neighborCount -= 1;
+
                 //"game" rules
-                if((field[yPos][xPos]) && (neighborCount < 2))
-                    tempField[yPos][xPos] = false;
-                else if((field[yPos][xPos]) && (neighborCount > 3))
-                    tempField[yPos][xPos] = false;
-                else if((field[yPos][xPos] == false) &&(neighborCount == 3))
+                if((field[yPos][xPos]) && ((neighborCount == 2) || (neighborCount == 3)))
                     tempField[yPos][xPos] = true;
-                else if((field[yPos][xPos]) && ((neighborCount == 2) || (neighborCount == 3)))
+
+                else if((field[yPos][xPos] == false) && (neighborCount == 3))
                     tempField[yPos][xPos] = true;
-                else if((field[yPos][xPos] == false) && (neighborCount == 0))
+
+                else
                     tempField[yPos][xPos] = false;
             }
         }
@@ -162,42 +167,17 @@ void run(bool (&field)[ySize][xSize])
             }
         }
         dispField(field);
-        Sleep(150);
+        Sleep(50);
     }
 }
+
 int main()
 {
     bool field[ySize][xSize] = {0};
 
-    field[9][9] = true;
-    field[9][8] = true;
-    field[9][10] = true;
-    field[9][11] = true;
-    field[8][8] = true;
-    field[7][8] = true;
-    field[6][9] = true;
-    field[8][12] = true;
-    field[6][12] = true;
-
-    field[20][20] = true;
-    field[20][21] = true;
-    field[20][19] = true;
-    field[19][21] = true;
-    field[18][20] = true;
-
-    field[20][5] = true;
-    field[20][6] = true;
-    field[20][4] = true;
-    field[19][6] = true;
-    field[18][5] = true;
-
-    field[30][6] = true;
-    field[30][7] = true;
-    field[30][8] = true;
-    field[29][7] = true;
-    field[31][6] = true;
-    field[31][8] = true;
-    field[32][7] = true;
+    field[15][15] = true;
+    field[15][16] = true;
+    field[15][17] = true;
 
     while(true)
     {
