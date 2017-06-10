@@ -21,6 +21,7 @@ void ShowConsoleCursor(bool showFlag)
 
 void centerField()
 {
+    //makes things look nicer
     cout << "\t\t\t\t\t\t";
 }
 
@@ -28,6 +29,7 @@ void dispField(bool field[ySize][xSize])
 {
     ShowConsoleCursor(false);
 
+    //clears text at the bottom of the screen and returns the cursor to origin
     SetConsoleCursorPosition( GetStdHandle( STD_OUTPUT_HANDLE ), {30, (ySize + 6)} );
     for(int i = 0; i < 600; ++i)
         cout << ' ';
@@ -39,6 +41,7 @@ void dispField(bool field[ySize][xSize])
     char tlCorner = 218;
     cout << tlCorner;
 
+    //draws top of bounding box
     for(int i = 0; i <= xSize-1; ++i)
     {
         char hLine = 196;
@@ -47,7 +50,6 @@ void dispField(bool field[ySize][xSize])
 
     char trCorner = 191;
     cout << trCorner;
-
     cout << '\n';
 
     char box = 219;
@@ -56,7 +58,9 @@ void dispField(bool field[ySize][xSize])
         centerField();
 
         char vLine = 179;
-        cout << vLine;
+        cout << vLine; //draws left side of bounding box
+
+        //draws field contents
         for(int x = 0; x < xSize; ++x)
         {
             if(field[y][x] == false)
@@ -64,13 +68,15 @@ void dispField(bool field[ySize][xSize])
             else
                 cout << box << box;
         }
-        cout << vLine <<'\n';
+
+        cout << vLine <<'\n'; //draws right side of bounding box
     }
 
     centerField();
     char blCorner = 192;
     cout << blCorner;
 
+    //draws bottom of bounding box
     for(int i = 0; i <= xSize-1; ++i)
     {
         char hLine = 196;
@@ -87,10 +93,12 @@ void dispField(bool field[ySize][xSize])
 
 void toggleCell(bool (&field)[ySize][xSize])
 {
+    centerField();
     cout << "enter X coordinate: ";
     int x;
     cin >> x;
 
+    centerField();
     cout << "enter Y coordinate: ";
     int y;
     cin >> y;
@@ -118,8 +126,10 @@ void run(bool (&field)[ySize][xSize])
         {
             for(int xPos = 0; xPos < xSize; ++xPos)
             {
+                //counter start position
                 int y = yPos - 1;
                 int x = xPos - 1;
+
                 int neighborCount = 0;
                 int tempX = x;
 
@@ -131,6 +141,7 @@ void run(bool (&field)[ySize][xSize])
                         y = (ySize - 1);
                     else if(y > (ySize - 1))
                         y = 0;
+
                     for(int itx = 0; itx < 3; ++itx, ++x)
                     {
                         //causes x to wrap around
@@ -145,6 +156,7 @@ void run(bool (&field)[ySize][xSize])
                     //resets x to initial value;
                     x = tempX;
                 }
+                //the current cell is also counted this removes it from the count
                 if(field[yPos][xPos])
                     neighborCount -= 1;
 
@@ -159,6 +171,8 @@ void run(bool (&field)[ySize][xSize])
                     tempField[yPos][xPos] = false;
             }
         }
+
+        //copies temporary field to the main field
         for(int yPos = 0; yPos < ySize; ++yPos)
         {
             for(int xPos = 0; xPos < xSize; ++xPos)
@@ -166,8 +180,9 @@ void run(bool (&field)[ySize][xSize])
                 field[yPos][xPos] = tempField[yPos][xPos];
             }
         }
+
         dispField(field);
-        Sleep(50);
+        Sleep(50); //delay in milliseconds
     }
 }
 
@@ -185,14 +200,16 @@ int main()
         cout << '\n';
         centerField();
 
-        cout << "toggle cell(0) or run(1)?: ";
-        bool option;
+        cout << "toggle cell(0), run(1) or quit(3)?: ";
+        int option;
         cin >> option;
 
         if(option == 0)
             toggleCell(field);
-        else
+        else if(option == 1)
             run(field);
+        else if(option == 3)
+            break;
     }
 
     return 0;
